@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 05, 2025 at 10:57 AM
+-- Generation Time: Feb 05, 2025 at 03:45 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -20,6 +20,37 @@ SET time_zone = "+00:00";
 --
 -- Database: `zoouser`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_users`
+--
+
+CREATE TABLE `admin_users` (
+  `admin_user_id` int NOT NULL,
+  `username` text NOT NULL,
+  `password` text NOT NULL,
+  `email` text NOT NULL,
+  `f_name` text NOT NULL,
+  `s_name` text NOT NULL,
+  `signup_date` int NOT NULL,
+  `privl` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audit`
+--
+
+CREATE TABLE `audit` (
+  `audit_id` int NOT NULL,
+  `username` text NOT NULL,
+  `taskcode` text NOT NULL,
+  `task` text NOT NULL,
+  `date` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -150,6 +181,18 @@ CREATE TABLE `visits` (
 --
 
 --
+-- Indexes for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  ADD PRIMARY KEY (`admin_user_id`);
+
+--
+-- Indexes for table `audit`
+--
+ALTER TABLE `audit`
+  ADD PRIMARY KEY (`audit_id`);
+
+--
 -- Indexes for table `hotel_rooms`
 --
 ALTER TABLE `hotel_rooms`
@@ -215,6 +258,18 @@ ALTER TABLE `visits`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  MODIFY `admin_user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `audit`
+--
+ALTER TABLE `audit`
+  MODIFY `audit_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `hotel_rooms`

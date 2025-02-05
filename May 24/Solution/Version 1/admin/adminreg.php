@@ -18,6 +18,8 @@ if (strpos($_POST['email'], $phrase) == false) {  // checks for key phrase in em
 // this code runs if the previous checks are ok
 
     include '../dbconnect/db_connect_insert.php';//Used to insert the data into the database, if valid
+
+
     try {  //try this code
 
         $hpswd = password_hash($_POST['password'], PASSWORD_DEFAULT);  //has the password
@@ -33,6 +35,10 @@ if (strpos($_POST['email'], $phrase) == false) {  // checks for key phrase in em
         $stmt->bindParam(6,$signup_date);
 
         $stmt->execute();  //run the query to insert
+
+        include '../functs.php';
+
+
         header("refresh:5; url=admin_login.php"); //confirm and redirect
         echo "<link rel='stylesheet' href='admin_styles.css'>";
         echo "Successfully registered";
@@ -44,4 +50,3 @@ if (strpos($_POST['email'], $phrase) == false) {  // checks for key phrase in em
     }
 
 }
-

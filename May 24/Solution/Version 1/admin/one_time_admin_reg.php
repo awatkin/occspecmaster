@@ -7,7 +7,6 @@
 //checks to see if user exists, then proceeds
 
 
-
 try {  //try this code, catch errors
     include '../dbconnect/db_connect_select.php';//gets the select user details to check if admin exists or not
     $sql = "SELECT * FROM admin_users"; //set up the sql statement
