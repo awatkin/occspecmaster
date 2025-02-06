@@ -8,13 +8,10 @@
 
 
 try {  //try this code, catch errors
-    include '../dbconnect/db_connect_select.php';//gets the select user details to check if admin exists or not
-    $sql = "SELECT * FROM admin_users"; //set up the sql statement
-    $stmt = $conn->prepare($sql); //prepares
-    $stmt->execute(); //run the sql code
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);  //brings back results
 
-    if ($result) {  // if there is a result returned
+include 'admin_functs.php';
+
+    if (super_checker()) {  // calls function in admin_functs to check if ssuper user exists.
 
         header("refresh:4; url=admin_login.php");
         echo "<link rel='stylesheet' href='admin_styles.css'>";
@@ -68,6 +65,8 @@ try {  //try this code, catch errors
         echo "<input type='text' name='sname' placeholder='Surname' required><br>";
 
         echo "<input type='text' name='email' placeholder='Email' required><br>";
+
+        echo "<input type='hidden' name='priv' value='SUPER'><br>";
 
         echo "<input type='submit' name='submit' value='Register'>";
 

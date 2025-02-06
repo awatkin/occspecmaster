@@ -2,10 +2,14 @@
 // file to validate information for new admin user before inserting into database
 
 include '../functs.php';  // brings in the funct file for common functions
+include 'admin_functs.php';
+  // used to check correct format of email address
 
-$phrase = "@rzl.com";  // used to check correct format of email address
-
-if (strpos($_POST['email'], $phrase) == false) {  // checks for key phrase in email field
+if($_POST['priv']=="SUPER" and super_checker()) {
+    header("refresh:4; url=admin_login.php");
+    echo "<link rel='stylesheet' href='admin_styles.css'>";
+    echo "Super admin already exists, go login";
+} elseif(valid_email()) {  // checks for key phrase in email field
     header("refresh:4; url=one_time_admin_reg.php");
     echo "<link rel='stylesheet' href='admin_styles.css'>";
     echo "Invalid email, try again";
@@ -14,11 +18,11 @@ if (strpos($_POST['email'], $phrase) == false) {  // checks for key phrase in em
     echo "<link rel='stylesheet' href='admin_styles.css'>";
     echo "Password related issue, try again";
 
-} else {
+}
+else {
 // this code runs if the previous checks are ok
 
     include '../dbconnect/db_connect_insert.php';//Used to insert the data into the database, if valid
-
 
     try {  //try this code
 

@@ -6,7 +6,7 @@ echo "<ul id='menu'>";
 
 echo "<a href='index.php'><li> Home </li></a>";
 
-if (empty($_SESSION["adminlogin"])) {
+if (empty($_SESSION["admin_ssnlogin"])) {
     echo "<a href='login.php'><li> Login </li></a>";
 
 } elseif ($_SESSION["adminlogin"]) {
