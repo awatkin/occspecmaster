@@ -39,8 +39,8 @@ else {
         $stmt->bindParam(7,$_POST['priv']);
 
         $stmt->execute();  //run the query to insert
-
-        auditor($_POST['username'], "superreg", "Registration of a super user");
+        $admin_reg_type = strtolower($_POST['priv']) + "reg";
+        auditor($_POST['username'], $admin_reg_type, "Registration of a super user");
 
         header("refresh:5; url=admin_login.php"); //confirm and redirect
         echo "<link rel='stylesheet' href='admin_styles.css'>";

@@ -16,11 +16,6 @@ function pwrd_checker($pass, $cpass) {  //takes in 2 parameters
     }
 }
 
-function admin_sesh_started(){
-    if(isset($_SESSION["admin_login"])){  // checks to see if the user is logged in or not already
-        return true;  // if they are, returns true
-    }
-}
 
 function auditor($who, $taskcode, $task){
 

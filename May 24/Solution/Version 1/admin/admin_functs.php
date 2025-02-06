@@ -21,3 +21,9 @@ function valid_email(){
         return true;
     }
 }
+
+function admin_sesh_started(){
+    if(isset($_SESSION["admin_ssnlogin"])){  // checks to see if the user is logged in or not already
+        return true;  // if they are, returns true
+    }
+}

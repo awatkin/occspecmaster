@@ -2,7 +2,7 @@
 
 session_start();  // connects to any session that might have started
 
-include '../functs.php';  // includes the core reusable functions file
+include 'admin_functs.php';  // includes the core admin reusable functions file
 
 if (admin_sesh_started()) {  // checks to see if admin user is already logged in
     header("location:admin_index.php");  // sends them to the admin index page if they are already logged in
