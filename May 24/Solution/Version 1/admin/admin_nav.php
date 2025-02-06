@@ -4,10 +4,10 @@ echo "<div id='admin_navbar'>";
 
 echo "<ul id='menu'>";
 
-echo "<a href='admin_index.php'><li> Home </li></a>";
+echo "<a href='../admin_index.php'><li> Home </li></a>";
 
 if (empty($_SESSION["admin_ssnlogin"])) {
-    echo "<a href='admin_login.php'><li> Login </li></a>";
+    echo "<a href='../admin_login.php'><li> Login </li></a>";
 
 } elseif ($_SESSION["admin_ssnlogin"]) {
 

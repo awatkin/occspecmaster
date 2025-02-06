@@ -30,8 +30,8 @@ echo "<h4> Admin System</h4>";
 echo "<br>";
 
 echo "Use the links above to complete the tasks needed. ";
-
-echo "nice image here please";
+echo "<br>";
+echo "<img src='../assets/zoo-animals.jpg'>";
 
 echo "<br><br>";
 
