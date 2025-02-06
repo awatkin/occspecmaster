@@ -25,7 +25,7 @@ function admin_sesh_started(){
 function auditor($who, $taskcode, $task){
 
     try {
-        include '/dbconnect/db_connect_insert.php';
+        include 'dbconnect/db_connect_insert.php';
         $sql = "INSERT INTO audit (username, taskcode, task, date) VALUES (?, ?, ?, ?)";  //prepare the sql to be sent
         $stmt = $conn->prepare($sql); //prepare to sql
 
@@ -33,7 +33,7 @@ function auditor($who, $taskcode, $task){
         $stmt->bindParam(2,$taskcode);
         $stmt->bindParam(3,$task);
         $date = time();
-        $stmt->bindParam(6,$date);
+        $stmt->bindParam(4,$date);
 
         $stmt->execute();  //run the query to insert
     }  catch (PDOException $e) { //catch error

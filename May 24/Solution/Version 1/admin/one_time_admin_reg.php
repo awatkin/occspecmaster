@@ -11,7 +11,7 @@ try {  //try this code, catch errors
 
 include 'admin_functs.php';
 
-    if (super_checker()) {  // calls function in admin_functs to check if ssuper user exists.
+    if (super_checker()) {  // calls function in admin_functs to check if superuser exists.
 
         header("refresh:4; url=admin_login.php");
         echo "<link rel='stylesheet' href='admin_styles.css'>";
@@ -82,8 +82,6 @@ include 'admin_functs.php';
 
     }
 } catch(PDOException $e) {
-
-
     //header("refresh:4; url=admin_login.php");
     echo "<link rel='stylesheet' href='admin_styles.css'>";
     echo "ERROR: " . $e->getMessage();

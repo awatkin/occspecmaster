@@ -9,7 +9,7 @@ if($_POST['priv']=="SUPER" and super_checker()) {
     header("refresh:4; url=admin_login.php");
     echo "<link rel='stylesheet' href='admin_styles.css'>";
     echo "Super admin already exists, go login";
-} elseif(valid_email()) {  // checks for key phrase in email field
+} elseif(valid_email()!=true) {  // checks for key phrase in email field
     header("refresh:4; url=one_time_admin_reg.php");
     echo "<link rel='stylesheet' href='admin_styles.css'>";
     echo "Invalid email, try again";
@@ -17,7 +17,6 @@ if($_POST['priv']=="SUPER" and super_checker()) {
     header("refresh:4; url=one_time_admin_reg.php");
     echo "<link rel='stylesheet' href='admin_styles.css'>";
     echo "Password related issue, try again";
-
 }
 else {
 // this code runs if the previous checks are ok
@@ -26,22 +25,22 @@ else {
 
     try {  //try this code
 
-        $hpswd = password_hash($_POST['password'], PASSWORD_DEFAULT);  //has the password
-        $sql = "INSERT INTO admin_users (username, password, email, f_name, s_name, signup_date) VALUES (?, ?, ?, ?, ?, ?)";  //prepare the sql to be sent
+        $sql = "INSERT INTO admin_users (username, password, email, f_name, s_name, signup_date, privl) VALUES (?, ?, ?, ?, ?, ?, ?)";  //prepare the sql to be sent
         $stmt = $conn->prepare($sql); //prepare to sql
 
         $stmt->bindParam(1,$_POST['username']);  //bind parameters for security
+        $hpswd = password_hash($_POST['password'], PASSWORD_DEFAULT);  //has the password
         $stmt->bindParam(2,$hpswd);
         $stmt->bindParam(3,$_POST['email']);
         $stmt->bindParam(4,$_POST['fname']);
         $stmt->bindParam(5,$_POST['sname']);
         $signup_date = time();
         $stmt->bindParam(6,$signup_date);
+        $stmt->bindParam(7,$_POST['priv']);
 
         $stmt->execute();  //run the query to insert
 
-        include '../functs.php';
-
+        auditor($_POST['username'], "superreg", "Registration of a super user");
 
         header("refresh:5; url=admin_login.php"); //confirm and redirect
         echo "<link rel='stylesheet' href='admin_styles.css'>";
