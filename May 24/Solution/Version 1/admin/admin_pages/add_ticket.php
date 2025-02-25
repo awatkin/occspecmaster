@@ -1,8 +1,8 @@
 <?php
 
-session_start();
+session_start();  // connects to the session to pull through the session variables
 
-if ($_SESSION['level']=='EDITOR') {
+if ($_SESSION['level']=='EDITOR') {  // if you are only an editor, you cant be here.
     header("refresh:4; url=../admin_index.php");
     echo "<link rel='stylesheet' href='../admin_styles.css'>";
     echo "Not high enough admin rights";
@@ -28,7 +28,7 @@ else {
 
     echo "</div>";
 
-    include '../admin_nav.php';
+    include '../admin_nav.php';  // includes the needed nav bar
 
     echo "<div id='content'>";
 
@@ -36,7 +36,7 @@ else {
 
     echo "<br>";
 
-    echo "<form method='post' action='ticket_reg.php'>";
+    echo "<form method='post' action='ticket_reg.php'>";  //post method is important to send the info to the ticket reg page
 
     echo "<input type='text' name='type' placeholder='Ticket Type' required><br>";
 

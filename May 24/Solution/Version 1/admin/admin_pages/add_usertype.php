@@ -1,8 +1,8 @@
 <?php
 
-session_start();
+session_start();  // connects to the session to pull through the session variables
 
-if ($_SESSION['level']=='EDITOR') {
+if ($_SESSION['level']=='EDITOR') {  // if you are only an editor, you cant be here.
     header("refresh:4; url=../admin_index.php");
     echo "<link rel='stylesheet' href='../admin_styles.css'>";
     echo "Not high enough admin rights";

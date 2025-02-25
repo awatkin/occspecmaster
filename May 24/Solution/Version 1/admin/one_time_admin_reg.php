@@ -52,7 +52,7 @@ include 'admin_functs.php';
 
         echo "<br>";
 
-        echo "<form method='post' action='adminreg.php'>";
+        echo "<form method='post' action='admin_pages/add_admin.php'>";
 
         echo "<input type='text' name='username' placeholder='Username' required><br>";
 
