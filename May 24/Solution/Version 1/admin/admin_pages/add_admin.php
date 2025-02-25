@@ -1,5 +1,7 @@
 <?php
 
+// refactored code to put all the work into one page for adding an admin
+
 include '../admin_functs.php';
 session_start();
 
@@ -9,7 +11,7 @@ if (!isset($_SESSION['level'])) {
     echo "<link rel='stylesheet' href='../admin_styles.css'>";  //
     echo "Not logged in, please log in";
 }
-elseif (isset($_SESSION['level']) && $_SESSION['level']!='SUPER') {
+elseif ($_SESSION['level']!='SUPER') {
     header("refresh:4; url=admin_login.php");
     echo "<link rel='stylesheet' href='../admin_styles.css'>";
     echo "INSUFFICIENT CLEARANCE, LOGIN or ASK FOR to be registered";

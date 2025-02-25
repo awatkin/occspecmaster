@@ -1,17 +1,16 @@
 <?php
 
 // This page allows an appropriate admin user to create a hotelroom type
+// Refactor to integrate all parts of it into this one page
 
 session_start();  // connects to the session to pull in session variables
 
-
 if (!isset($_SESSION['level'])) {
-//if ($_SESSION['level']=='EDITOR') {  // checks the admin level of the admin
     header("refresh:4; url=../admin_login.php");  // if they are only an editor, then send them elsewhere
     echo "<link rel='stylesheet' href='../admin_styles.css'>";  //
     echo "Not logged in, please log in";
 }
-elseif (isset($_SESSION['level']) && $_SESSION['level']=='EDITOR') {
+elseif ($_SESSION['level']=='EDITOR') {
     header("refresh:4; url=../admin_index.php");  // if they are only an editor, then send them elsewhere
     echo "<link rel='stylesheet' href='../admin_styles.css'>";  //
     echo "Not high enough admin rights";
