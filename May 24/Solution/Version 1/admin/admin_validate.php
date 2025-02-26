@@ -1,11 +1,9 @@
 <?php
-
+session_start();  //connect to session data for logged in
 
 try {  //try this code, catch errors
 
-    session_start();  //connect to session data for logged in
-    include '../dbconnect/db_connect_select.php';
-    include '../functs.php';
+    require_once '../dbconnect/db_connect_select.php';
     $usnm = $_POST['username']; //copy username from post data
     $sql = "SELECT password, privl FROM admin_users WHERE username = ?"; //set up the sql statement
     $stmt = $conn->prepare($sql); //prepares
@@ -16,16 +14,13 @@ try {  //try this code, catch errors
     if($result){  // if there is a result returned
 
         if (password_verify($_POST["password"], $result["password"])) { // verifies the password is matched
-
             $_SESSION["admin_ssnlogin"] = true;  // sets up the session variables
             $_SESSION["username"] = $_POST['username'];
             $_SESSION["level"] = $result["privl"];
-            auditor($_POST['username'],"login", "Logged into the system");
             header("location:admin_index.php");  //redirect on success
             exit();
 
         } else{
-            auditor($_POST['username'],"flogin","Failed to log into the system");
             session_destroy(); //if failed, kills session and error message
             header("refresh:4; url=admin_login.php");
             echo "<link rel='stylesheet' href='admin_styles.css'>";

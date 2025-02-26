@@ -1,27 +1,43 @@
 <?php
 
-include '../functs.php';
-function reg_admin($username, $password, $email, $fname, $sname, $priv) {
-    include '../dbconnect/db_connect_insert.php';//Used to insert the data into the database, if valid
 
-    $sql = "INSERT INTO admin_users (username, password, email, f_name, s_name, signup_date, privl) VALUES (?, ?, ?, ?, ?, ?, ?)";  //prepare the sql to be sent
-    $stmt = $conn->prepare($sql); //prepare to sql
+function reg_admin($post) {
+    require_once '../dbconnect/db_connect_insert.php';//Used to insert the data into the database, if valid
+    require_once '../functs.php';
+    try {
+        // Validate the post data
+        if (!isset($post['username'], $post['password'], $post['fname'], $post['sname'], $post['email'], $post['priv'])) {
+            throw new Exception("Missing required fields.");
+        }
 
-    $stmt->bindParam(1, $username);  //bind parameters for security
-    $hpswd = password_hash($password, PASSWORD_DEFAULT);  //has the password
-    $stmt->bindParam(2, $hpswd);
-    $stmt->bindParam(3, $email);
-    $stmt->bindParam(4, $fname);
-    $stmt->bindParam(5, $sname);
-    $signup_date = time();
-    $stmt->bindParam(6, $signup_date);
-    $stmt->bindParam(7, $priv);
+        // Prepare and execute the SQL query
+        $sql = "INSERT INTO admin_users (username, password, email, f_name, s_name, signup_date, privl) VALUES (?, ?, ?, ?, ?, ?, ?)";  //prepare the sql to be sent
+        $stmt = $conn->prepare($sql); //prepare to sql
 
-    $stmt->execute();  //run the query to insert
-    $admin_reg_type = strtolower($priv) . "reg";
-    $admin_reg_task = "Registration of a " . strtolower($priv) . " admin user";
-    auditor($username, $admin_reg_type, $admin_reg_task);
+        $stmt->bindParam(1, $post['username']);  //bind parameters for security
+        // Hash the password
+        $hpswd = password_hash($post['password'], PASSWORD_DEFAULT);  //has the password
+        $stmt->bindParam(2, $hpswd);
+        $stmt->bindParam(3, $post['email']);
+        $stmt->bindParam(4, $post['fname']);
+        $stmt->bindParam(5, $post['sname']);
+        $signup_date = time();
+        $stmt->bindParam(6, $signup_date);
+        $stmt->bindParam(7, $post['priv']);
 
+        $stmt->execute();  //run the query to insert
+        $conn = null;  // closes the connection so cant be abused.
+        return true; // Registration successful
+
+    } catch (PDOException $e) {
+        // Handle database errors
+        error_log("Database error: " . $e->getMessage()); // Log the error
+        throw new Exception("Database error occurred. Please try again later."); //Throw exception for calling script to handle.
+    } catch (Exception $e) {
+        // Handle validation or other errors
+        error_log("Registration error: " . $e->getMessage()); //Log the error
+        throw new Exception($e->getMessage()); //Throw exception for calling script to handle.
+    }
 }
 function super_checker(){
     try {
@@ -37,10 +53,8 @@ function super_checker(){
         }
     }
     catch (PDOException $e) { //catch error
-        //header("refresh:4; url=one_time_admin_reg.php");
-        echo "<link rel='stylesheet' href='admin_styles.css'>";
         echo "Error: " . $e->getMessage();
-        echo "Password related issue, try again";
+
     }
 }
 

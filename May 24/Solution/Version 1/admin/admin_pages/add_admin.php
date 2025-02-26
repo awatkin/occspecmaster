@@ -3,26 +3,24 @@
 
 session_start();  // connect to session if one has started
 
-include '../admin_functs.php';  // include the admin functions
-include '../../functs.php';  // include the main functions
+require_once '../admin_functs.php';  // include the admin functions
+require_once '../../functs.php';  // include the main functions
 
-if (!isset($_SESSION['level'])) {
+if (!isset($_SESSION['level'])) {  // if you re not logged in then sent sway
 
-        header("refresh:4; url=../admin_login.php");  // if they are only an editor, then send them elsewhere
+        header("refresh:4; url=../admin_login.php");
         echo "<link rel='stylesheet' href='../admin_styles.css'>";  //
         echo "Not logged in, please log in";
 
 }
-elseif ($_SESSION['level']!='SUPER') {
+elseif ($_SESSION['level']!='SUPER') {  // if you are not a super user, then cant be here
 
     header("refresh:4; url=admin_login.php");
     echo "<link rel='stylesheet' href='../admin_styles.css'>";
-    echo "INSUFFICIENT CLEARANCE, LOGIN or ASK FOR to be registered";
+    echo "INSUFFICIENT CLEARANCE, LOGIN or ASK to be registered";
 
 }
-elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    include '../../functs.php';  // brings in the funct file for common functions
+elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {  // if its a post method
     // used to check correct format of email address
 
     if ($_POST['priv'] == "SUPER" and super_checker()) {
@@ -39,7 +37,19 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Password related issue, try again";
     } else {
 // this code runs if the previous checks are ok
-        reg_admin($_POST['username'], $_POST['password'],$_POST['email'],$_POST['fname'], $_POST['sname'],$_POST['priv']);
+
+        try {
+
+            if(reg_admin($_POST)) { // Assuming $conn is your database connection
+                header("Location: admin_index.php");
+                exit; // Stop further execution
+            } else {
+                echo 'error';
+            }
+        }
+        catch(Exception $e) {
+            echo "database issue ". $e->getMessage();
+        }
 
     }
 }
@@ -88,7 +98,7 @@ else {
     echo "<input type='text' name='email' placeholder='Email' required><br>";
 
     echo "<label for='user-role'>Select User Role:</label>";
-    echo "<select id='priv' name='priv'>";
+    echo "<select name='priv'>";
     echo "<option value='CREATOR'>Creator</option>";
     echo "<option value='EDITOR'>Editor</option>";
     echo "</select><br>";
