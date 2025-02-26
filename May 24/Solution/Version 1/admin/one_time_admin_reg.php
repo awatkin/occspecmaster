@@ -5,19 +5,33 @@
 //session_start(); // trys to connect with user session
 
 //checks to see if user exists, then proceeds
+include 'admin_functs.php';
 
 
 try {  //try this code, catch errors
 
-include 'admin_functs.php';
-
     if (super_checker()) {  // calls function in admin_functs to check if superuser exists.
-
         header("refresh:4; url=admin_login.php");
         echo "<link rel='stylesheet' href='admin_styles.css'>";
         echo "ADMIN ALREADY EXISTS, LOGIN or ASK FOR to be registered";
+    }
 
-    } else {
+    elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+        try {
+            reg_admin($_POST['username'], $_POST['password'], $_POST['email'], $_POST['fname'], $_POST['sname'], $_POST['priv']);
+            header("refresh:4; url=admin_login.php");
+            echo "<link rel='stylesheet' href='admin_styles.css'>";
+            echo "Successfully registered, now going to login page";
+        }
+        catch(Exception $e) {
+            header("refresh:4; url=one_time_admin_reg.php");
+            echo "<link rel='stylesheet' href='admin_styles.css'>";
+            echo "database issue ". $e->getMessage();
+        }
+    }
+
+    else {
 
         echo "<!DOCTYPE html>";
 
@@ -52,7 +66,7 @@ include 'admin_functs.php';
 
         echo "<br>";
 
-        echo "<form method='post' action='admin_pages/add_admin.php'>";
+        echo "<form method='post' action='one_time_admin_reg.php'>";
 
         echo "<input type='text' name='username' placeholder='Username' required><br>";
 

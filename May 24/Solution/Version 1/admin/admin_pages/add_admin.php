@@ -1,22 +1,26 @@
 <?php
-
 // refactored code to put all the work into one page for adding an admin
 
-include '../admin_functs.php';
-session_start();
+session_start();  // connect to session if one has started
+
+include '../admin_functs.php';  // include the admin functions
+include '../../functs.php';  // include the main functions
 
 if (!isset($_SESSION['level'])) {
-//if ($_SESSION['level']=='EDITOR') {  // checks the admin level of the admin
-    header("refresh:4; url=../admin_login.php");  // if they are only an editor, then send them elsewhere
-    echo "<link rel='stylesheet' href='../admin_styles.css'>";  //
-    echo "Not logged in, please log in";
+
+        header("refresh:4; url=../admin_login.php");  // if they are only an editor, then send them elsewhere
+        echo "<link rel='stylesheet' href='../admin_styles.css'>";  //
+        echo "Not logged in, please log in";
+
 }
 elseif ($_SESSION['level']!='SUPER') {
+
     header("refresh:4; url=admin_login.php");
     echo "<link rel='stylesheet' href='../admin_styles.css'>";
     echo "INSUFFICIENT CLEARANCE, LOGIN or ASK FOR to be registered";
+
 }
-elseif ($_SESSION['level']=='SUPER' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     include '../../functs.php';  // brings in the funct file for common functions
     // used to check correct format of email address
@@ -29,44 +33,14 @@ elseif ($_SESSION['level']=='SUPER' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         header("refresh:4; url=one_time_admin_reg.php");
         echo "<link rel='stylesheet' href='../admin_styles.css'>";
         echo "Invalid email, try again";
-    } elseif (pwrd_checker($_POST['password'], $_POST['cpassword']) == false) {  //calls function to check password complexity
+    } elseif (!pwrd_checker($_POST['password'], $_POST['cpassword'])) {  //calls function to check password complexity
         header("refresh:4; url=one_time_admin_reg.php");
         echo "<link rel='stylesheet' href='../admin_styles.css'>";
         echo "Password related issue, try again";
     } else {
 // this code runs if the previous checks are ok
+        reg_admin($_POST['username'], $_POST['password'],$_POST['email'],$_POST['fname'], $_POST['sname'],$_POST['priv']);
 
-        include '../../dbconnect/db_connect_insert.php';//Used to insert the data into the database, if valid
-
-        try {  //try this code
-
-            $sql = "INSERT INTO admin_users (username, password, email, f_name, s_name, signup_date, privl) VALUES (?, ?, ?, ?, ?, ?, ?)";  //prepare the sql to be sent
-            $stmt = $conn->prepare($sql); //prepare to sql
-
-            $stmt->bindParam(1, $_POST['username']);  //bind parameters for security
-            $hpswd = password_hash($_POST['password'], PASSWORD_DEFAULT);  //has the password
-            $stmt->bindParam(2, $hpswd);
-            $stmt->bindParam(3, $_POST['email']);
-            $stmt->bindParam(4, $_POST['fname']);
-            $stmt->bindParam(5, $_POST['sname']);
-            $signup_date = time();
-            $stmt->bindParam(6, $signup_date);
-            $stmt->bindParam(7, $_POST['priv']);
-
-            $stmt->execute();  //run the query to insert
-            $admin_reg_type = strtolower($_POST['priv']) . "reg";
-            $admin_reg_task = "Registration of a " . strtolower($_POST['priv']) . " admin user";
-            auditor($_POST['username'], $admin_reg_type, $admin_reg_task);
-
-            header("refresh:5; url=admin_login.php"); //confirm and redirect
-            echo "<link rel='stylesheet' href='../admin_styles.css'>";
-            echo "Successfully registered";
-        } catch (PDOException $e) { //catch error
-            header("refresh:4; url=one_time_admin_reg.php");
-            echo "<link rel='stylesheet' href='../admin_styles.css'>";
-            echo "Error: " . $e->getMessage();
-            echo "Password related issue, try again";
-        }
     }
 }
 else {
@@ -76,8 +50,8 @@ else {
     echo "<html lang='en'>";
 
     echo "<head>";
-    echo "<link rel='stylesheet' href='../admin_styles.css'>";
     echo "<title> RZL Add Admin Page</title>";
+    echo "<link rel='stylesheet' href='../admin_styles.css'>";
     echo "</head>";
 
     echo "<body>";
