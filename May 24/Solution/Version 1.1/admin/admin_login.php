@@ -26,7 +26,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){  // if superuser doesn't exist a
             if (password_verify($_POST["password"], $result["password"])) { // verifies the password is matched
                 $_SESSION["admin_ssnlogin"] = true;  // sets up the session variables
                 $_SESSION["username"] = $_POST['username'];
-                $_SESSION["level"] = $result["priv"];
+                $_SESSION["priv"] = $result["priv"];
                 $_SESSION['SUCCESS'] = "Admin Successfully Logged In";
                 header("location:admin_index.php");  //redirect on success
                 exit();
