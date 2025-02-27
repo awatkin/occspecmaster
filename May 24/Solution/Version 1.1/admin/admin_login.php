@@ -3,8 +3,9 @@ session_start();
 
 require_once 'admin_functions.php';
 require_once '../dbconnect/db_connect_master.php';
+require_once '../common_functions.php';
 
-if (isset($_SESSION['ssnadmin'])){
+if (isset($_SESSION['admin_ssnlogin'])){
     $_SESSION['ERROR'] = "Admin already logged in";
     header("Location: admin_index.php");
     exit; // Stop further execution
@@ -22,8 +23,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){  // if superuser doesn't exist a
         $result = $stmt->fetch(PDO::FETCH_ASSOC);  //brings back results
 
         if($result){  // if there is a result returned
+            $short_code = $result["priv"]."login";
+            $long_code = $_POST['username']." ".$result["priv"]." login";
 
-            if (password_verify($_POST["password"], $result["password"])) { // verifies the password is matched
+            if (password_verify($_POST["password"], $result["password"]) && auditor(dbconnect_insert(), $_POST['username'], $short_code, $long_code)) { // verifies the password is matched
                 $_SESSION["admin_ssnlogin"] = true;  // sets up the session variables
                 $_SESSION["username"] = $_POST['username'];
                 $_SESSION["priv"] = $result["priv"];

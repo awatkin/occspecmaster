@@ -5,6 +5,8 @@ require_once '../dbconnect/db_connect_master.php';  // include once the db conne
 
 require_once 'admin_functions.php';  // include ones the admin functions
 
+require_once '../common_functions.php';
+
 if (super_checker(dbconnect_select())) {  // calls function in admin_functs to check if superuser exists.
     $_SESSION['ERROR'] = "ADMIN ALREADY EXISTS, LOGIN or ASK FOR to be registered";  // sets the error session variable to be read out by the next page
     header('location: admin_login.php');  // redirects to the needed new page.
@@ -12,7 +14,7 @@ if (super_checker(dbconnect_select())) {  // calls function in admin_functs to c
 }
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){  // if superuser doesn't exist and posted to this page
     try {
-        if(reg_admin(dbconnect_insert(),$_POST)) { // Assuming $conn is your database connection
+        if(reg_admin(dbconnect_insert(),$_POST) && auditor(dbconnect_insert(), $_POST['username'], "SUPERREG", "SUPER USER REGISTERED")) { // Assuming $conn is your database connection
             $_SESSION['SUCCESS'] = "ADMIN REGISTERED";
             header("Location: admin_login.php");
             exit; // Stop further execution

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 05, 2025 at 03:45 PM
+-- Generation Time: Feb 27, 2025 at 08:57 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -35,8 +35,9 @@ CREATE TABLE `admin_users` (
   `f_name` text NOT NULL,
   `s_name` text NOT NULL,
   `signup_date` int NOT NULL,
-  `privl` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `priv` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 -- --------------------------------------------------------
 
@@ -50,7 +51,8 @@ CREATE TABLE `audit` (
   `taskcode` text NOT NULL,
   `task` text NOT NULL,
   `date` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 -- --------------------------------------------------------
 
@@ -64,7 +66,7 @@ CREATE TABLE `hotel_rooms` (
   `occupancy` int NOT NULL,
   `no_of_rooms` int NOT NULL,
   `price` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -80,7 +82,7 @@ CREATE TABLE `h_booking` (
   `nights` int NOT NULL,
   `amount_paid` float NOT NULL,
   `total_price` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -92,7 +94,7 @@ CREATE TABLE `loyalty_transaction` (
   `loyalty_id` int NOT NULL,
   `points` int NOT NULL,
   `user_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -105,7 +107,7 @@ CREATE TABLE `staying_in` (
   `booking_id` int NOT NULL,
   `hr_id` int NOT NULL,
   `no_of_guests` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -118,7 +120,7 @@ CREATE TABLE `tickets` (
   `type` text NOT NULL,
   `price` float NOT NULL,
   `no_of_tickets` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -133,7 +135,7 @@ CREATE TABLE `t_booking` (
   `date` int NOT NULL,
   `amount_paid` float NOT NULL,
   `total_price` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -149,7 +151,7 @@ CREATE TABLE `user` (
   `s_name` text NOT NULL,
   `signupdate` int NOT NULL,
   `user_type_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -161,7 +163,7 @@ CREATE TABLE `user_type` (
   `user_type_id` int NOT NULL,
   `type` text NOT NULL,
   `discount` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -174,7 +176,7 @@ CREATE TABLE `visits` (
   `t_booking_id` int NOT NULL,
   `t_id` int NOT NULL,
   `no_of_tickets` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indexes for dumped tables
@@ -263,13 +265,13 @@ ALTER TABLE `visits`
 -- AUTO_INCREMENT for table `admin_users`
 --
 ALTER TABLE `admin_users`
-  MODIFY `admin_user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `admin_user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `audit`
 --
 ALTER TABLE `audit`
-  MODIFY `audit_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `audit_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `hotel_rooms`
