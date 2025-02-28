@@ -2,13 +2,11 @@
 
 session_start();  // connects to the session to pull through the session variables
 
-require_once '../../dbconnect/db_connect_master.php';  // include once the db connect functions
+require_once 'admin_functions.php';
+require_once '../dbconnect/db_connect_master.php';
+require_once '../common_functions.php';
 
-require_once 'admin_functions.php';  // include ones the admin functions
-
-require_once '../../common_functions.php';
-
-if (!isset($_SESSION['admin_ssnlogin']) || $_SESSION['priv']='EDITOR'){  // checks for logged in OR if they are only an editor
+if (!isset($_SESSION['admin_ssnlogin']) || $_SESSION['priv']=='EDITOR'){  // checks for logged in OR if they are only an editor
     $_SESSION['ERROR'] = "Admin not logged in / not enough privileges.";  //sets error message
     header("Location: admin_login.php");  // redirects them to another place
     exit; // Stop further execution
@@ -74,7 +72,7 @@ echo "<input type='text' name='price' placeholder='Price per ticket' required><b
 
 echo "<input type='text' name='no_of_tickets' placeholder='Number of tickets available' required><br>";
 
-echo "<input type='submit' name='submit' value='Register'>";
+echo "<input type='submit' name='submit' value='Submit'>";
 
 echo "<br><br>";
 

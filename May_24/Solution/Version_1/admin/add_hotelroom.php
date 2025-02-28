@@ -2,13 +2,13 @@
 
 session_start();  // connects to the session to pull through the session variables
 
-require_once '../../dbconnect/db_connect_master.php';  // include once the db connect functions
+require_once '../dbconnect/db_connect_master.php';  // include once the db connect functions
 
 require_once 'admin_functions.php';  // include ones the admin functions
 
-require_once '../../common_functions.php';
+require_once '../common_functions.php';
 
-if (!isset($_SESSION['admin_ssnlogin']) || $_SESSION['priv']='EDITOR'){  // checks for logged in OR if they are only an editor
+if (!isset($_SESSION['admin_ssnlogin']) || $_SESSION['priv']=='EDITOR'){  // checks for logged in OR if they are only an editor
     $_SESSION['ERROR'] = "Admin not logged in / not enough privileges.";  //sets error message
     header("Location: admin_login.php");  // redirects them to another place
     exit; // Stop further execution
@@ -16,20 +16,20 @@ if (!isset($_SESSION['admin_ssnlogin']) || $_SESSION['priv']='EDITOR'){  // chec
 
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {  // if to ensure POST AND appropriate admin level
     try {  //try this code
-        $longtask = $_SESSION['username'] . " added new ticket type of " . $_POST['type'];
-        if (add_ticket(dbconnect_insert(), $_POST) && auditor(dbconnect_insert(), $_SESSION['username'], "TICKETADD", $longtask)) {
-            $_SESSION['SUCCESS'] = $_POST['type']. " ticket type registered successfully.";
-            header("Location: add_ticket.php");
+        $longtask = $_SESSION['username'] . " added new hotel room type of " . $_POST['type'];
+        if (add_hotelroom(dbconnect_insert(), $_POST) && auditor(dbconnect_insert(), $_SESSION['username'], "HOTELROOMADD", $longtask)) {
+            $_SESSION['SUCCESS'] = $_POST['type']. " hotel room type registered successfully.";
+            header("Location: add_hotelroom.php");
             exit; // Stop further execution
         } else {
-            $_SESSION['ERROR'] = "Ticket Reg failed, UNKNOWN ERROR";
-            header("Location: add_ticket.php");
+            $_SESSION['ERROR'] = "Hotel Room Reg failed, UNKNOWN ERROR";
+            header("Location: add_hotelroom.php");
             exit; // Stop further execution
         }
     } catch (Exception $e) {
         // Handle database error within reg_admin or here.
-        $_SESSION['ERROR'] = "TICKET REG ERROR: " . $e->getMessage();
-        header("Location: add_ticket.php");
+        $_SESSION['ERROR'] = "HOTELROOM REG ERROR: " . $e->getMessage();
+        header("Location: add_hotelroom.php");
         exit; // Stop further execution
     }
 }
@@ -74,9 +74,9 @@ echo "<input type='text' name='occupancy' placeholder='Occupancy of the room' re
 
 echo "<input type='text' name='no_of_rooms' placeholder='Number of this room type available' required><br>";
 
-echo "<input type='text' name='price' placeholder='Price per ticket' required><br>";
+echo "<input type='text' name='price' placeholder='Price per night' required><br>";
 
-echo "<input type='submit' name='submit' value='Register'>";
+echo "<input type='submit' name='submit' value='Submit'>";
 
 echo "<br><br>";
 

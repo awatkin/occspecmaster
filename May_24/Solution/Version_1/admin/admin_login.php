@@ -2,8 +2,8 @@
 session_start();
 
 require_once 'admin_functions.php';
-require_once '../../dbconnect/db_connect_master.php';
-require_once '../../common_functions.php';
+require_once '../dbconnect/db_connect_master.php';
+require_once '../common_functions.php';
 
 if (isset($_SESSION['admin_ssnlogin'])){
     $_SESSION['ERROR'] = "Admin already logged in";
@@ -15,12 +15,12 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){  // if superuser doesn't exist a
     try {  //try this code, catch errors
 
         $conn = dbconnect_select();
-        $_POST['username']; //copy username from post data
         $sql = "SELECT password, priv FROM admin_users WHERE username = ?"; //set up the sql statement
         $stmt = $conn->prepare($sql); //prepares
         $stmt->bindParam(1,$_POST['username']);  //binds the parameters to execute
         $stmt->execute(); //run the sql code
         $result = $stmt->fetch(PDO::FETCH_ASSOC);  //brings back results
+        $conn = null;  // nulls off the connection so cant be abused.
 
         if($result){  // if there is a result returned
             $short_code = $result["priv"]."login";

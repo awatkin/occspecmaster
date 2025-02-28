@@ -3,56 +3,51 @@
 
 session_start();  // connect to session if one has started
 
-require_once '../admin_functs.php';  // include the admin functions
-require_once '../../functs.php';  // include the main functions
+require_once 'admin_functions.php';  // include the admin functions
+require_once '../dbconnect/db_connect_master.php';  // include once the db connect functions
+require_once '../common_functions.php';  // include the main functions
 
-if (!isset($_SESSION['level'])) {  // if you re not logged in then sent sway
-
-        header("refresh:4; url=../admin_login.php");
-        echo "<link rel='stylesheet' href='../admin_styles.css'>";  //
-        echo "Not logged in, please log in";
-
+if (!isset($_SESSION['admin_ssnlogin']) || $_SESSION['priv']!='SUPER'){
+    $_SESSION['ERROR'] = "Admin not logged in / not enough privileges.";
+    header("Location: admin_login.php");
+    exit; // Stop further execution
 }
-elseif ($_SESSION['level']!='SUPER') {  // if you are not a super user, then cant be here
 
-    header("refresh:4; url=admin_login.php");
-    echo "<link rel='stylesheet' href='../admin_styles.css'>";
-    echo "INSUFFICIENT CLEARANCE, LOGIN or ASK to be registered";
-
-}
-elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {  // if its a post method
+elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {  // if it's a post method
     // used to check correct format of email address
 
     if ($_POST['priv'] == "SUPER" and super_checker()) {
-        header("refresh:4; url=admin_login.php");
-        echo "<link rel='stylesheet' href='../admin_styles.css'>";
-        echo "Super admin already exists, go login";
-    } elseif (!valid_email()) {  // checks for key phrase in email field
-        header("refresh:4; url=one_time_admin_reg.php");
-        echo "<link rel='stylesheet' href='../admin_styles.css'>";
-        echo "Invalid email, try again";
+        $_SESSION['ERROR'] = "Super admin already exists, go login";
+        header("Location: admin_index.php");
+        exit; // Stop further execution
     } elseif (!pwrd_checker($_POST['password'], $_POST['cpassword'])) {  //calls function to check password complexity
-        header("refresh:4; url=one_time_admin_reg.php");
-        echo "<link rel='stylesheet' href='../admin_styles.css'>";
-        echo "Password related issue, try again";
+        $_SESSION['ERROR'] = "Password related issue, try again";
+        header("Location: add_admin.php");
+        exit; // Stop further execution
     } else {
 // this code runs if the previous checks are ok
-
         try {
-
-            if(reg_admin($_POST)) { // Assuming $conn is your database connection
+            $short_task = $_POST['priv']."REG";
+            $long_task = $_POST['username']." registered as a ".$_POST['priv'];
+            if(reg_admin(dbconnect_insert(),$_POST) && auditor(dbconnect_insert(), $_POST['username'], $short_task, $long_task)) { // Assuming $conn is your database connection
+                $_SESSION['SUCCESS'] = $_POST['priv']." ADMIN REGISTERED";
                 header("Location: admin_index.php");
                 exit; // Stop further execution
             } else {
-                echo 'error';
+                $_SESSION['ERROR'] = "ADD ADMIN FAIL, UNKNOWN ERROR";
+                header("Location: admin_index.php");
+                exit; // Stop further execution
             }
         }
         catch(Exception $e) {
-            echo "database issue ". $e->getMessage();
+            // Handle database error within reg_admin or here.
+            $_SESSION['ERROR'] = "SUPER REG ERROR: ". $e->getMessage();
+            header("Location: admin_index.php");
+            exit; // Stop further execution
         }
+    }
 
     }
-}
 else {
 
     echo "<!DOCTYPE html>";
@@ -61,7 +56,7 @@ else {
 
     echo "<head>";
     echo "<title> RZL Add Admin Page</title>";
-    echo "<link rel='stylesheet' href='../admin_styles.css'>";
+    echo "<link rel='stylesheet' href='admin_styles.css'>";
     echo "</head>";
 
     echo "<body>";
@@ -74,7 +69,7 @@ else {
 
     echo "</div>";
 
-    include '../admin_nav.php';
+    include 'admin_nav.php';
 
     echo "<div id='content'>";
 
@@ -82,6 +77,9 @@ else {
 
     echo "<br>";
 
+    echo admin_error($_SESSION);
+
+    echo "<br>";
 
     echo "<form method='post' action='add_admin.php'>";
 

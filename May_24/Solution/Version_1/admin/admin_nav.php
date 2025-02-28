@@ -19,17 +19,17 @@ if (!isset($_SESSION["admin_ssnlogin"])) {
 
         echo "<a href='add_ticket.php'> Add Ticket </a>";
         echo " :: ";
-        echo "<a href='admin_pages/add_hotelroom.php'> Add Hotel Room </a>";
+        echo "<a href='add_hotelroom.php'> Add Hotel Room </a>";
         echo " :: ";
-        echo "<a href='admin_pages/add_usertype.php'> Add User Type </a>";
+        echo "<a href='add_usertype.php'> Add User Type </a>";
         echo " :: ";
     }
 
-    echo "<a href='admin_pages/update_ticket.php'> Update Ticket </a>";
+    echo "<a href='update_ticket.php'> Update Ticket </a>";
     echo " :: ";
-    echo "<a href='admin_pages/update_hotelroom.php'> Update Hotel Room </a>";
+    echo "<a href='update_hotelroom.php'> Update Hotel Room </a>";
     echo " :: ";
-    echo "<a href='admin_pages/update_usertype.php'> Update Hotel Room </a>";
+    echo "<a href='update_usertype.php'> Update Hotel Room </a>";
     echo " :: ";
 }
         // everyone

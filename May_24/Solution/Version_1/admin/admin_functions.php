@@ -124,13 +124,13 @@ function add_ticket($conn,$post){
 
 function add_hotelroom($conn,$post){
     // Validate the post data
-    if (!isset($post['type'], $post['price'], $post['no_of_tickets'])) {
+    if (!isset($post['type'], $post['occupancy'], $post['no_of_rooms'], $post['price'])) {
         throw new Exception("Missing required fields.");
     }
     else {
         try {
             // Prepare and execute the SQL query
-            $sql = "INSERT INTO hotel_rooms (type, occupancy, no_of_rooms, price, ) VALUES (?, ?, ?, ?)";  //prepare the sql to be sent
+            $sql = "INSERT INTO hotel_rooms (type, occupancy, no_of_rooms, price) VALUES (?, ?, ?, ?)";  //prepare the sql to be sent
             $stmt = $conn->prepare($sql); //prepare to sql
 
             $stmt->bindParam(1, $post['type']);  //bind parameters for security
@@ -152,4 +152,33 @@ function add_hotelroom($conn,$post){
         }
     }
 
+}
+
+function add_usertype($conn,$post){
+    // Validate the post data
+    if (!isset($post['type'], $post['discount'])) {
+        throw new Exception("Missing required fields.");
+    }
+    else {
+        try {
+            // Prepare and execute the SQL query
+            $sql = "INSERT INTO user_type (type, discount) VALUES (?, ?)";  //prepare the sql to be sent
+            $stmt = $conn->prepare($sql); //prepare to sql
+
+            $stmt->bindParam(1, $post['type']);  //bind parameters for security
+            $stmt->bindParam(2, $post['discount']);
+
+            $stmt->execute();  //run the query to insert
+            $conn = null;  // closes the connection so cant be abused.
+            return true; // Registration successful
+        } catch (PDOException $e) {
+            // Handle database errors
+            error_log("Add User Type Database error: " . $e->getMessage()); // Log the error
+            throw new Exception("Add User Type Database error" . $e); //Throw exception for calling script to handle.
+        } catch (Exception $e) {
+            // Handle validation or other errors
+            error_log("Add User Type Registration error: " . $e->getMessage()); //Log the error
+            throw new Exception("Add User Type Registration error: " . $e->getMessage()); //Throw exception for calling script to handle.
+        }
+    }
 }

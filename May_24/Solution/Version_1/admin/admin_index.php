@@ -3,7 +3,6 @@
 session_start();
 
 require_once 'admin_functions.php';
-
 require_once '../dbconnect/db_connect_master.php';
 
 echo "<!DOCTYPE html>";
@@ -33,13 +32,14 @@ echo "<h4> Admin System</h4>";
 
 echo "<br>";
 echo admin_error($_SESSION);
+
 echo "<br>";
 
 echo "Use the links above to complete the tasks needed. ";
 echo "<br>";
 echo "<br>";
 
-echo "<img src='../../assets/zoo-animals.jpg'>";
+echo "<img src='../assets/zoo-animals.jpg'>";
 
 echo "<br><br>";
 
