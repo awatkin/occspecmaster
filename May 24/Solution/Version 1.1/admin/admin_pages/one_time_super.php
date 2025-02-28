@@ -1,11 +1,11 @@
 <?php
 session_start();  // connects with or starts a session if not already existing
 
-require_once '../dbconnect/db_connect_master.php';  // include once the db connect functions
+require_once '../../dbconnect/db_connect_master.php';  // include once the db connect functions
 
 require_once 'admin_functions.php';  // include ones the admin functions
 
-require_once '../common_functions.php';
+require_once '../../common_functions.php';
 
 if (super_checker(dbconnect_select())) {  // calls function in admin_functs to check if superuser exists.
     $_SESSION['ERROR'] = "ADMIN ALREADY EXISTS, LOGIN or ASK FOR to be registered";  // sets the error session variable to be read out by the next page

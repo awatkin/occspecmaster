@@ -121,3 +121,35 @@ function add_ticket($conn,$post){
 
 
 }
+
+function add_hotelroom($conn,$post){
+    // Validate the post data
+    if (!isset($post['type'], $post['price'], $post['no_of_tickets'])) {
+        throw new Exception("Missing required fields.");
+    }
+    else {
+        try {
+            // Prepare and execute the SQL query
+            $sql = "INSERT INTO hotel_rooms (type, occupancy, no_of_rooms, price, ) VALUES (?, ?, ?, ?)";  //prepare the sql to be sent
+            $stmt = $conn->prepare($sql); //prepare to sql
+
+            $stmt->bindParam(1, $post['type']);  //bind parameters for security
+            $stmt->bindParam(2, $post['occupancy']);
+            $stmt->bindParam(3, $post['no_of_rooms']);
+            $stmt->bindParam(4, $post['price']);
+
+            $stmt->execute();  //run the query to insert
+            $conn = null;  // closes the connection so cant be abused.
+            return true; // Registration successful
+        } catch (PDOException $e) {
+            // Handle database errors
+            error_log("Add Room Database error: " . $e->getMessage()); // Log the error
+            throw new Exception("Add Ticket Database error" . $e); //Throw exception for calling script to handle.
+        } catch (Exception $e) {
+            // Handle validation or other errors
+            error_log("Add Room Registration error: " . $e->getMessage()); //Log the error
+            throw new Exception("Add Ticket Registration error: " . $e->getMessage()); //Throw exception for calling script to handle.
+        }
+    }
+
+}
