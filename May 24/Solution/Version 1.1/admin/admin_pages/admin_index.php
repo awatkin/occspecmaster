@@ -39,7 +39,7 @@ echo "Use the links above to complete the tasks needed. ";
 echo "<br>";
 echo "<br>";
 
-echo "<img src='../assets/zoo-animals.jpg'>";
+echo "<img src='../../assets/zoo-animals.jpg'>";
 
 echo "<br><br>";
 

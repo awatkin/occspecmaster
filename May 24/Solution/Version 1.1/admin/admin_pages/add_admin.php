@@ -3,13 +3,13 @@
 
 session_start();  // connect to session if one has started
 
-require_once '../admin_functions.php';  // include the admin functions
+require_once 'admin_functions.php';  // include the admin functions
 require_once '../../dbconnect/db_connect_master.php';  // include once the db connect functions
 require_once '../../common_functions.php';  // include the main functions
 
 if (!isset($_SESSION['admin_ssnlogin']) || $_SESSION['priv']!='SUPER'){
     $_SESSION['ERROR'] = "Admin not logged in / not enough privileges.";
-    header("Location: ../admin_login.php");
+    header("Location: admin_login.php");
     exit; // Stop further execution
 }
 
@@ -31,7 +31,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {  // if it's a post method
             $long_task = $_POST['username']." registered as a ".$_POST['priv'];
             if(reg_admin(dbconnect_insert(),$_POST) && auditor(dbconnect_insert(), $_POST['username'], $short_task, $long_task)) { // Assuming $conn is your database connection
                 $_SESSION['SUCCESS'] = $_POST['priv']." ADMIN REGISTERED";
-                header("Location: ../admin_index.php");
+                header("Location: admin_index.php");
                 exit; // Stop further execution
             } else {
                 $_SESSION['ERROR'] = "ADD ADMIN FAIL, UNKNOWN ERROR";
@@ -56,7 +56,7 @@ else {
 
     echo "<head>";
     echo "<title> RZL Add Admin Page</title>";
-    echo "<link rel='stylesheet' href='../admin_styles.css'>";
+    echo "<link rel='stylesheet' href='admin_styles.css'>";
     echo "</head>";
 
     echo "<body>";
@@ -69,7 +69,7 @@ else {
 
     echo "</div>";
 
-    include '../admin_nav.php';
+    include 'admin_nav.php';
 
     echo "<div id='content'>";
 

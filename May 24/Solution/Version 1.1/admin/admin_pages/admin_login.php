@@ -2,8 +2,8 @@
 session_start();
 
 require_once 'admin_functions.php';
-require_once '../dbconnect/db_connect_master.php';
-require_once '../common_functions.php';
+require_once '../../dbconnect/db_connect_master.php';
+require_once '../../common_functions.php';
 
 if (isset($_SESSION['admin_ssnlogin'])){
     $_SESSION['ERROR'] = "Admin already logged in";

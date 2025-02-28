@@ -12,12 +12,12 @@ if (!isset($_SESSION["admin_ssnlogin"])) {
 } else {
 //    if super
     if ($_SESSION["priv"] == "SUPER") {
-        echo "<a href='admin_pages/add_admin.php'> Add admin </a>";
+        echo "<a href='add_admin.php'> Add admin </a>";
         echo " :: ";
     }
-    if (!$_SESSION["priv"] == "EDITOR") {
+    if ($_SESSION["priv"] != "EDITOR") {
 
-        echo "<a href='admin_pages/add_ticket.php'> Add Ticket </a>";
+        echo "<a href='add_ticket.php'> Add Ticket </a>";
         echo " :: ";
         echo "<a href='admin_pages/add_hotelroom.php'> Add Hotel Room </a>";
         echo " :: ";
