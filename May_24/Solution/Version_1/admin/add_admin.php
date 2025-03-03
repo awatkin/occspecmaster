@@ -16,7 +16,7 @@ if (!isset($_SESSION['admin_ssnlogin']) || $_SESSION['priv']!='SUPER'){
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {  // if it's a post method
     // used to check correct format of email address
 
-    if ($_POST['priv'] == "SUPER" and super_checker()) {
+    if ($_POST['priv'] == "SUPER" and super_checker(dbconnect_select())) {
         $_SESSION['ERROR'] = "Super admin already exists, go login";
         header("Location: admin_index.php");
         exit; // Stop further execution
