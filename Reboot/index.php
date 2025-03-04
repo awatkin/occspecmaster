@@ -1,6 +1,8 @@
 <?php
 
-session_start();
+session_start(); // needs to be first thing, so we have connection to session data
+
+require_once "common_functions.php";  // includes the common functions we will use alot.
 
 echo "<!DOCTYPE html>";
 
@@ -15,9 +17,9 @@ echo "<body>";
 
 echo "<div id='container'>";
 
-require_once 'title.php';
+require_once 'title.php';  // includes the title section of code
 
-require_once 'nav.php';
+require_once 'nav.php';  // includes the nav bar hyperlinks
 
 echo "<div id='content'>";
 
@@ -25,7 +27,7 @@ echo "<h4> Hello and Welcome to the RZA Website</h4>";
 
 echo "<br>";
 
-echo usr_error($_SESSION);
+echo usr_error($_SESSION);  // calls the function for feedback
 
 echo "<br>";
 

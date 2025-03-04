@@ -2,6 +2,8 @@
 
 session_start();  //
 
+require_once 'common_functions.php';
+
 if(isset($_SESSION['username'])){
     $_SESSION['message'] = "You are already logged in.";
     header("Location: index.php");
@@ -11,7 +13,8 @@ elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
     if($_POST['password'] == $_POST['cpassword']){
         try {
             // Prepare and execute the SQL query
-            $sql = "INSERT INTO user (username, email, password, f_name, s_name) VALUES (?, ?, ?, ?, ?)";  //prepare the sql to be sent
+            $conn = db_connect();
+            $sql = "INSERT INTO user (username, email, password, fname, sname) VALUES (?, ?, ?, ?, ?)";  //prepare the sql to be sent
             $stmt = $conn->prepare($sql); //prepare to sql
 
             $stmt->bindParam(1, $_POST['username']);  //bind parameters for security
@@ -19,8 +22,8 @@ elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
             // Hash the password
             $hpswd = password_hash($_POST['password'], PASSWORD_DEFAULT);  //has the password
             $stmt->bindParam(3, $hpswd);
-            $stmt->bindParam(4, $post['fname']);
-            $stmt->bindParam(5, $post['sname']);
+            $stmt->bindParam(4, $_POST['fname']);
+            $stmt->bindParam(5, $_POST['sname']);
 
             $stmt->execute();  //run the query to insert
             $conn = null;  // closes the connection so cant be abused.
