@@ -1,6 +1,6 @@
 <?php
 
-
+// auditor to inform the system log of activities
 function auditor($conn, $who, $short_what, $long_what){
 
     try {
@@ -28,7 +28,7 @@ function auditor($conn, $who, $short_what, $long_what){
 
 }
 
-
+// function to compare passwords, SHOULD check complexity
 function pwrd_checker($pass, $cpass) {  //takes in 2 parameters
 
     if($pass!=$cpass){  // do the passwords not match
@@ -42,7 +42,7 @@ function pwrd_checker($pass, $cpass) {  //takes in 2 parameters
     }
 }
 
-
+// function to check session data for a message and output
 function usr_error(&$session){
 
     if(isset($session['ERROR'])){  // checks for the session variable being set with an error
@@ -62,7 +62,7 @@ function usr_error(&$session){
     }
 }
 
-
+//check to make sure that usernames are unique, if the same name exists.. you may not use.
 function only_user($conn, $username){
     try {
         $sql = "SELECT username FROM user WHERE username = ?"; //set up the sql statement
@@ -84,7 +84,7 @@ function only_user($conn, $username){
     }
 }
 
-
+// gets user types for use in the user registration
 function get_user_types($conn){
     try {
         $sql = "SELECT user_type_id, type FROM user_type"; //set up the sql statement
@@ -102,7 +102,7 @@ function get_user_types($conn){
     }
 }
 
-
+// registers a user to the database
 function reg_user($conn,$post){
     if (!isset($post['username'], $post['password'], $post['fname'], $post['sname'], $post['user_type'])) {
         throw new Exception("Missing required fields.");
@@ -134,6 +134,57 @@ function reg_user($conn,$post){
             error_log("User Registration error: " . $e->getMessage()); //Log the error
             throw new Exception("User Registration error: " . $e->getMessage()); //Throw exception for calling script to handle.
         }
+    }
+
+}
+
+// function to get the types of ticket avilable from the database
+function get_ticket_types($conn){
+    try {
+        $sql = "SELECT t_id, type FROM tickets"; //set up the sql statement
+        $stmt = $conn->prepare($sql); //prepares
+        $stmt->execute(); //run the sql code
+        $result = $stmt->fetchall(PDO::FETCH_ASSOC);  //brings back results
+
+        return $result;
+    }
+    catch (PDOException $e) { //catch error
+        // Log the error (crucial!)
+        error_log("Database error in get ticket type: " . $e->getMessage());
+        // Throw the exception
+        throw $e; // Re-throw the exception
+    }
+}
+
+// this is a function to check if tickets are available the day you want
+function avail_tickets($conn,$post){
+    try {
+        // gets the number of tickets ordered of the entered type, for the date asked
+        $sql = "SELECT tb.num_bought,t.no_of_tickets FROM t_booking tb INNER JOIN tickets t ON tb.t_id = t.t_id WHERE tb.date = ? AND tb.t_id = ?;"; //set up the sql statement
+        $stmt = $conn->prepare($sql); //prepares
+        $stmt->bindParam(1, $post['booking_date']);
+        $stmt->bindParam(2, $post['ticket_type']);
+        $stmt->execute(); //run the sql code
+        $result = $stmt->fetchall(PDO::FETCH_ASSOC);  //brings back results into an assosciative array
+
+        $total_sold = 0;
+        $total_avai=0;
+        foreach($result as $row){
+            $total_sold += $row['num_bought'];
+            $total_avai = $row['num_bought'];
+        }
+        $temp = $total_sold+$post['num'];
+        if($temp< $total_avai){
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (PDOException $e) { //catch error
+    // Log the error (crucial!)
+    error_log("Database error in get ticket type: " . $e->getMessage());
+    // Throw the exception
+    throw $e; // Re-throw the exception
     }
 
 }
