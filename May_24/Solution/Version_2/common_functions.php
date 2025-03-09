@@ -177,28 +177,38 @@ function get_ticket_types($conn){
 // this is a function to check if tickets are available the day you want
 function avail_tickets($conn,$post){
     try {
-        $sql = "SELECT tb.num_bought,t.no_of_tickets FROM t_booking tb INNER JOIN tickets t ON tb.t_id = t.t_id WHERE tb.date = ? AND tb.t_id = ?;"; //gets the total sold for each booking on that date, and the num of tickets available of that type
+        $sql1 = "SELECT no_of_tickets FROM tickets where t_id = ?";  // get the total tickets allowed for a day for the wanted ticket type
+        $stmt = $conn->prepare($sql1); //prepares
+        $stmt->bindParam(1, $post['ticket_type']);  // bind the ticket id from the form on book tickets.php
+        $stmt->execute(); //run the sql code
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);  //brings back result of num_of_tickets
+
+        $num_tickets =  $result['no_of_tickets']; // takes a copy of the value for use in comparisons
+
+        $sql = "SELECT num_bought FROM t_booking WHERE date = ? AND t_id = ?;"; //gets the total sold for booking on that date
         $stmt = $conn->prepare($sql); //prepares
-        $stmt->bindParam(1, $post['booking_date']);
+        $stmt->bindParam(1, $post['booking_date']);  // bind the parameters
         $stmt->bindParam(2, $post['ticket_type']);
         $stmt->execute(); //run the sql code
         $result = $stmt->fetchall(PDO::FETCH_ASSOC);  //brings back results into an assosciative array
         $conn = null;  // securely close off the connection to the database
+
         if($result) {  // if there is a result (bookings for that day)
             $total_sold = $post['num'];  // start by taking the number wanted by the user
             foreach ($result as $row) {
                 $total_sold += $row['num_bought'];  // add to it the number for each matched booking for that date
             }
 
-            if ($total_sold <= $result[0]['no_of_tickets']) {   // if the total sold (including the user wanted number) is less than or equal to no available
+            if ($total_sold <= $num_tickets) {   // if the total sold (including the user wanted number) is less than or equal to number available
                 return true;  // return true to say yes you can book
             } else {
-                return false;  // otherwise false
+                return false;  // otherwise false you cant book
             }
-        }else{
+        }elseif ($num_tickets > $post['num']){  // no bookings on that day, is there enough available?
             return true;  // if no result (no bookings for that day), then return true to book
 
-            // ideally in here, it should check the user wanted number against the number that could be sold to do this properly.
+        } else {
+            return false;
         }
 
     } catch (PDOException $e) { //catch error
