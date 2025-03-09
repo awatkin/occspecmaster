@@ -1,5 +1,23 @@
 <?php
 
+function get_userid($conn,$post){  // new function to source the userID after registering then store it in the session data
+    try {
+        $sql = "SELECT user FROM user WHERE username = ?"; //set up the sql statement
+        $stmt = $conn->prepare($sql); //prepares
+        $stmt->bindParam(1, $post['username']);
+        $stmt->execute(); //run the sql code
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);  //brings back results
+        $conn = null;  // securely close off the connection
+        return $result["user"];
+    }
+    catch (PDOException $e) { //catch error
+        // Log the error (crucial!)
+        error_log("Database error in get_userid function: " . $e->getMessage());
+        // Throw the exception
+        throw $e; // Re-throw the exception
+    }
+}
+
 // auditor to inform the system log of activities
 function auditor($conn, $who, $short_what, $long_what){
 
@@ -159,32 +177,74 @@ function get_ticket_types($conn){
 // this is a function to check if tickets are available the day you want
 function avail_tickets($conn,$post){
     try {
-        // gets the number of tickets ordered of the entered type, for the date asked
-        $sql = "SELECT tb.num_bought,t.no_of_tickets FROM t_booking tb INNER JOIN tickets t ON tb.t_id = t.t_id WHERE tb.date = ? AND tb.t_id = ?;"; //set up the sql statement
+        $sql = "SELECT tb.num_bought,t.no_of_tickets FROM t_booking tb INNER JOIN tickets t ON tb.t_id = t.t_id WHERE tb.date = ? AND tb.t_id = ?;"; //gets the total sold for each booking on that date, and the num of tickets available of that type
         $stmt = $conn->prepare($sql); //prepares
         $stmt->bindParam(1, $post['booking_date']);
         $stmt->bindParam(2, $post['ticket_type']);
         $stmt->execute(); //run the sql code
         $result = $stmt->fetchall(PDO::FETCH_ASSOC);  //brings back results into an assosciative array
+        $conn = null;  // securely close off the connection to the database
+        if($result) {  // if there is a result (bookings for that day)
+            $total_sold = $post['num'];  // start by taking the number wanted by the user
+            foreach ($result as $row) {
+                $total_sold += $row['num_bought'];  // add to it the number for each matched booking for that date
+            }
 
-        $total_sold = 0;
-        $total_avai=0;
-        foreach($result as $row){
-            $total_sold += $row['num_bought'];
-            $total_avai = $row['num_bought'];
-        }
-        $temp = $total_sold+$post['num'];
-        if($temp< $total_avai){
-            return true;
-        } else {
-            return false;
+            if ($total_sold <= $result[0]['no_of_tickets']) {   // if the total sold (including the user wanted number) is less than or equal to no available
+                return true;  // return true to say yes you can book
+            } else {
+                return false;  // otherwise false
+            }
+        }else{
+            return true;  // if no result (no bookings for that day), then return true to book
+
+            // ideally in here, it should check the user wanted number against the number that could be sold to do this properly.
         }
 
     } catch (PDOException $e) { //catch error
-    // Log the error (crucial!)
-    error_log("Database error in get ticket type: " . $e->getMessage());
-    // Throw the exception
-    throw $e; // Re-throw the exception
+        // Log the error (crucial!)
+        error_log("Database error in get ticket type: " . $e->getMessage());
+        // Throw the exception
+        throw $e; // Re-throw the exception
     }
 
+}
+
+//function to put the booking into the database
+function t_booking_confirm($conn_select, $conn_insert, &$session, $post){  //takes i access to session and connections and post data
+    try {
+        // Get Total to be paid for order
+        $sql = "SELECT price FROM tickets WHERE t_id = ?;"; //set up the sql statement
+        $stmt = $conn_select->prepare($sql); //prepares
+        $stmt->bindParam(1, $post['ticket_type']);
+        $stmt->execute(); //run the sql code
+        $sel_result = $stmt->fetch(PDO::FETCH_ASSOC);  //brings back results into an assosciative array
+        $conn_select = null;  // securely close off the connection to the database
+        $total_price = $sel_result['price']* $post['num'];  // calcs the total price of the order
+
+        // Prepare and execute the SQL query
+        $sql = "INSERT INTO t_booking (user_id, t_id, made_on, date, num_bought, total_price) VALUES (?, ?, ?, ?, ?, ?)";  //inserts booking into database
+        $stmt = $conn_insert->prepare($sql); //prepare to sql
+
+        $stmt->bindParam(1, $session['user_id']);  //bind parameters for security
+        // Hash the password
+        $stmt->bindParam(2, $post['ticket_type']);
+        $timnow = time();
+        $stmt->bindParam(3, $timnow);
+        $stmt->bindParam(4, $post['booking_date']);
+        $stmt->bindParam(5, $post['num']);
+        $stmt->bindParam(6, $total_price);
+
+        $stmt->execute();  //run the query to insert
+        $conn = null;  // closes the connection so cant be abused.
+        return true; // Registration successful
+    }  catch (PDOException $e) {
+        // Handle database errors
+        error_log("Ticket Book Database error: " . $e->getMessage()); // Log the error
+        throw new Exception("Ticket book Database error". $e); //Throw exception for calling script to handle.
+    } catch (Exception $e) {
+        // Handle validation or other errors
+        error_log("Ticket Booking error: " . $e->getMessage()); //Log the error
+        throw new Exception("Ticket Booking error: " . $e->getMessage()); //Throw exception for calling script to handle.
+    }
 }

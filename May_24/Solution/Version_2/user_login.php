@@ -27,6 +27,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){  // if superuser doesn't exist a
 
             if (password_verify($_POST["password"], $result["password"]) && auditor(dbconnect_insert(), $_POST['username'], $short_code, $long_code)) { // verifies the password is matched
                 $_SESSION["user_ssnlogin"] = true;  // sets up the session variables
+                $_SESSION['user_id'] = get_userid(dbconnect_select(),$_POST);
                 $_SESSION["username"] = $_POST['username'];
                 $_SESSION["user_type_id"] = $result["user_type_id"];
                 $_SESSION['SUCCESS'] = "User Successfully Logged In";
