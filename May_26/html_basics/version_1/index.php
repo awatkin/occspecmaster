@@ -8,6 +8,7 @@ echo "<html>";
     echo "<head>";
 
         echo "<title> watkin</title>";
+        echo "<link rel='stylesheet' type='text/css' href='css/styles.css' />";
 
     echo "</head>";
 
@@ -20,7 +21,7 @@ echo "<html>";
 
         echo "<a href='page2.php'> Go to page 2. </a>";
 
-        echo "<img src='homer.jfif'>";
+        echo "<img src='images/homer.jfif'>";
 
         echo "<table>";
 
